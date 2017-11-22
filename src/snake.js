@@ -4,7 +4,7 @@ const {AlertDialog} = require("tabris");
 
 /***************************************************************************************
  * Objeto Objeto
- * Param: tamaño del objeto, contexto del canvas, color del Objeto
+ * Param: {tamano,color}
  * Methods: choca que recibe como parámetro un objeto y devuelve verdadero
  * si hay colisión entre ellos, en caso contrario falso.
  * dibujar que es la rutina básica de dibujo de todos los objetos
@@ -21,6 +21,7 @@ var Objeto = function(o) {
             diferenciaY < this.tamano);
     }
 }
+// obj = {ctx,width,height}
 Objeto.prototype.dibujar = function(obj) {
     this.width = obj.width;
     this.height = obj.height;
@@ -30,8 +31,7 @@ Objeto.prototype.dibujar = function(obj) {
 
 /****************************************************************************************
  *  Objeto Snake
- *  Param: x coordenada, y coordenada, tamano del objeto, contexto de dibujo y
- *  color del objeto
+ *  Param:  {x,y,tamano,color}
  *  Methods: setXY para establecer las nuevas coordenadas. nuevaCola para añadir
  *  un objeto nuevo en la cola. getCola para obtener la cola. dibujar que redefine
  *  el método de su padre Objeto
@@ -73,6 +73,7 @@ var Snake = function(o) {
 Snake.prototype = Object.create(Objeto.prototype);
 Snake.prototype.constructor = Snake;
 // Si hay cola, se llama a esta para que se dibuje
+// obj = {ctx,width,height}
 Snake.prototype.dibujar = function(obj) {
     if (this.cola != null) this.cola.dibujar(obj)
     Objeto.prototype.dibujar.call(this, obj);
@@ -80,7 +81,7 @@ Snake.prototype.dibujar = function(obj) {
 
 /********************************************************************************************
  * Objeto Comida
- * Param: tamano del objeto, contexto para dibujar y color del Objeto
+ * Param: {x,y,tamano,color}
  * Methods: aleatorio para dar coordenadas aleatorias dentro del canvas y
  * nuevoSitio para asignar las coordenadas a las variables.
  */
@@ -108,7 +109,7 @@ Comida.prototype.constructor = Comida;
  * Es el que controla la dinámica del juego y las relaciones entre la comida y la
  * serpiente y entre la serpiente y los bordes.
  * Se encarga de crear los objetos Comida y Snake.
- * Y de engancharse al DOM para modificar la velocidad y presentar la puntuación.
+ * obj = {tamano,color,velocidad}
  **********************************************************************************************/
 function Juego(obj) {
     this.velocidad = obj.velocidad || 0.2;
@@ -189,14 +190,9 @@ function Juego(obj) {
     this.resetPunto = function() {
         this.puntos = 0;
     }
-        // La velocidad la mido en Frames por segundo
-        // haciendo un bucle vacio para comprobar la diferencia 
-        // del tiempo obtenido hasta que llegue al fps deseado (vel)
     this.fps = function() {
         return 1000 * _this.velocidad; // 1000 ms
     }
-        // Ciclo principal repetido con requestAnimationFrame
-        // y guardamos el handle pàra poder parar 
     this.loop = function(ctx, width, height) {
         _this.ctx = ctx;
         _this.width = width;
@@ -211,6 +207,8 @@ function Juego(obj) {
             _this._loop();
         }
     }
+    // ciclo principal de dibujado y actualización
+    // basado en setTimeout
     this._loop = function() {
         _this.autoChoque();
         _this.paredChoque();
@@ -221,12 +219,12 @@ function Juego(obj) {
             _this.sierpe.nuevaCola();
             _this.addPunto();
             if (_this.fps() > 0){
-                _this.velocidad -= 0.01;
+                _this.velocidad -= 0.02;
             }
         }
         _this.animacion = setTimeout(_this._loop, _this.fps());
     }
-        // Gracias al evento del teclado puedo modificar las variables
+        // Gracias al evento de los botones puedo modificar las variables
         // de dirección dirX y dirY y los incrementos para las coordenadas
         // incX e incY
         // La dirección marcar el eje por el que se puede mover y los incrementos
@@ -290,6 +288,7 @@ function Juego(obj) {
         });
         dialog.open();
         this.velocidad = this._velOrigen;
+        clearTimeout(this.animacion);
         this.resetPunto();
     }
 }
