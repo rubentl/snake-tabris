@@ -4,7 +4,7 @@
 ## Versión  
 
 ```
-1.0
+0.2.0
 ```
 
 ## Autor 
@@ -18,7 +18,8 @@ Rubén Toca
 Proyecto en desarrollo para probar la tecnología de Tabris en el desarrollo de
 aplicaciones para móviles con **Javascript**
 
-Es el juego de la serpiente que crece a medida que come. 
+Es el juego de la serpiente que crece a medida que come, con tres velocidades
+iniciales. 
 
 ## Run
 

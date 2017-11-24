@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="canvas.snake" version="0.1.0">
+<widget id="canvas.snake" version="0.2.0">
   <name>Snake</name>
   <description>
     Example Tabris.js App
